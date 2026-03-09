@@ -2,42 +2,28 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-const int Spin = 20;//moisture sensor pin
-DHT dht(26, DHT11);
-int moisture_lvl, sensor_analog = 4095;
-
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(Spin, INPUT);
-  
-  
-  dht.begin();
-  delay(2000);
-
-  Serial.begin(115200);
-  
+  pinMode(1, INPUT);
 }
 
 void loop() {
-  //moisture sensor
-  sensor_analog = analogRead(Spin);
-  moisture_lvl = (100 - ( ( sensor_analog / 4095) * 100) );// formula presentage
-  Serial.print("Moisture = ");
-  Serial.print(moisture_lvl);
+  // put your main code here, to run repeatedly:
+  float moisture_lvl; 
+  int sensor_analog;
+  //int dryValeu = 4095;
+  //int wetValeu = 1000;
+  //float value = 4095 - 1000;
+
+  sensor_analog = analogRead(1);
+  Serial.print(sensor_analog);
+  Serial.print("\n");
+  delay(5000);
+  Serial.print("Thanasis Algorithm: ");
+  float thanasis = sensor_analog/32.5;
+  Serial.print(thanasis);
   Serial.print("%");
-  delay(1000);
-
-  //Temperature-Humidity sensor
-  float temp = dht.readTemperature();
-  float humidity = dht.readHumidity();
-  Serial.print("Temperature: ");
-  Serial.print(temp);
-  Serial.print(" C ");
-  Serial.print("Humidity: ");
-  Serial.print(humidity);
-  Serial.println(" % ");
-  delay(2000);
-  
+  Serial.print("\n");
+  delay(5000);
 }
-
