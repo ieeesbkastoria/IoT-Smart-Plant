@@ -41,6 +41,7 @@ void loop() {
   Serial.print("This is the first:");
   Serial.print(First);
   Serial.print("%\n");
+  Serial.print("\n");
   delay(3000);
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -54,6 +55,11 @@ void loop() {
   Serial.print("This is the map algorithm:");
   Serial.print(moisture_lvl);
   Serial.print("%\n" );
+
+  //moisture_lvl = constrain(moisture_lvl, 0, 100);
+  Serial.print("This is the map algorithm:");
+  Serial.print(moisture_lvl);
+  Serial.print("\n");
   delay(3000);
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -63,6 +69,7 @@ void loop() {
   Serial.print("This is the first Percentage:");
   Serial.print(Percentage);
   Serial.print("%\n");
+  Serial.print("\n");
   delay(3000);
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -72,6 +79,7 @@ void loop() {
   Serial.print("This is the second Persentage:");
   Serial.print(percentage);
   Serial.print("%\n");
+  Serial.print("\n");
   delay(3000);
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -87,6 +95,7 @@ void loop() {
   /*--------------------Humidity sensor and Temperature sensor-----------------------------------------*/
   float humidity;
   float temperature;
+  Serial.print("\n");
 
   temperature = dht.readTemperature();//from library
   humidity = dht.readHumidity();
