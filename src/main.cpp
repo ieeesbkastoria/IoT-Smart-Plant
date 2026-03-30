@@ -4,6 +4,9 @@
 
 DHT dht(11,DHT11);
 
+float Sum = 0;
+int t = 0;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -15,8 +18,8 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   int sensor_analog;
-  float dryValeu = 4095.0;                          //here we have the value when it's completly dry
-  float wetValeu = 1200.0;                         //here we have the value when it's completly wet
+  float dryValeu = 1500.0;                          //here we have the value when it's completly dry
+  float wetValeu = 4095.0;                         //here we have the value when it's completly wet
   float value = wetValeu - dryValeu;
 
   sensor_analog = analogRead(1);
@@ -25,26 +28,7 @@ void loop() {
   Serial.print("\n");
   delay(3000);
   
-/*---------------------------------------------------------------------------------------------------*/
-
-  //code we did with Christos
-  Serial.print("Thanasis Algorithm: ");
-  float thanasis = sensor_analog/32.5;
-  Serial.print(thanasis);
-  Serial.print("%\n");
-  delay(3000);
-
-  /*---------------------------------------------------------------------------------------------------*/
-
-  //Fist type of algorithm we found to take humidity
-  int First = (100 - ( ( sensor_analog / 4095.0) * 100) );
-  Serial.print("This is the first:");
-  Serial.print(First);
-  Serial.print("%\n");
-  Serial.print("\n");
-  delay(3000);
-
-  /*---------------------------------------------------------------------------------------------------*/
+   /*---------------------------------------------------------------------------------------------------*/
 
   // Code with map, here we take the analogRead and proportionly to where it is
   // between the dry and wet value you get the persentance in humidity
@@ -55,34 +39,11 @@ void loop() {
   Serial.print("This is the map algorithm:");
   Serial.print(moisture_lvl);
   Serial.print("%\n" );
-
-  //moisture_lvl = constrain(moisture_lvl, 0, 100);
-  Serial.print("This is the map algorithm:");
-  Serial.print(moisture_lvl);
-  Serial.print("\n");
   delay(3000);
 
-  /*---------------------------------------------------------------------------------------------------*/
+  
 
-  //Παραλαγή του πραγματικόυ τήπου για την υγρασία
-  int Percentage = 100 - ( ( (sensor_analog - wetValeu) * 100L ) / (dryValeu - wetValeu) );
-  Serial.print("This is the first Percentage:");
-  Serial.print(Percentage);
-  Serial.print("%\n");
-  Serial.print("\n");
-  delay(3000);
-
-  /*---------------------------------------------------------------------------------------------------*/
-
-  //Δεύτερη παραλαγή του τύπου για την υγρασία
-  int percentage = 100 - ( ( (sensor_analog - wetValeu) / (float)(dryValeu - wetValeu) ) * 100 );
-  Serial.print("This is the second Persentage:");
-  Serial.print(percentage);
-  Serial.print("%\n");
-  Serial.print("\n");
-  delay(3000);
-
-  /*---------------------------------------------------------------------------------------------------*/
+   /*---------------------------------------------------------------------------------------------------*/
 
   float Tiggos = (sensor_analog - dryValeu) / (wetValeu - dryValeu) * 100.0;
   // Περιορισμός μεταξύ 0 και 100
@@ -91,7 +52,29 @@ void loop() {
   Serial.print("This is Tiggos formula:");
   Serial.print(Tiggos);
   Serial.print("%\n");
-  /*---------------------------------------------------------------------------------------------------*/
+  
+  /*-------------------------------------Summary----------------------------------------------------------*/
+
+  Sum = Sum + sensor_analog;
+  t = t + 1;
+
+  if (t >= 30)
+  {
+    Serial.print("Summary:");
+    float Sum1;
+    Sum1 = Sum / t;
+    int m = map(Sum1, dryValeu, wetValeu, 0, 100);
+    m = constrain(moisture_lvl, 0, 100);
+    Serial.print(m);
+    Serial.print("\n");
+
+    t = 0;
+  }
+
+  Serial.print("Loop:");
+  Serial.print(t);
+  Serial.print("\n");
+
   /*--------------------Humidity sensor and Temperature sensor-----------------------------------------*/
   float humidity;
   float temperature;
@@ -102,7 +85,7 @@ void loop() {
 
   if(isnan(humidity) || isnan(temperature))//error on reading
   {
-    Serial.print("Error data reading");
+    Serial.print("Error data reading \n");
     return;
   }
 
