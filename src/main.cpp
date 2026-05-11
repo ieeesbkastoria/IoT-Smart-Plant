@@ -45,16 +45,6 @@ void loop() {
 
    /*---------------------------------------------------------------------------------------------------*/
 
-  float Tiggos = (sensor_analog - dryValeu) / (wetValeu - dryValeu) * 100.0;
-  // Περιορισμός μεταξύ 0 και 100
-  if (Tiggos > 100.0) Tiggos = 100.0;
-  if (Tiggos < 0.0) Tiggos = 0.0;
-  Serial.print("This is Tiggos formula:");
-  Serial.print(Tiggos);
-  Serial.print("%\n");
-  
-  /*-------------------------------------Summary----------------------------------------------------------*/
-
   Sum = Sum + sensor_analog;
   t = t + 1;
 
