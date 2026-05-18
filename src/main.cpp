@@ -2,22 +2,24 @@
 #include <DHT.h>
 #include <DHT_U.h>
 #include <WiFi.h>
+#include <PubSubClient.h>
 #include <cmath> //Δεν ξερω που το θελει
 
   int r = 1;
 
 //wifi  and MQTT settings
-const char* ssid = ""; //wifi name here
-const char* password = ""; // wifi password here
-//const char* mqtt_server = "broker.flowfuse.cloud";
+const char* ssid = "IEEE Lab"; //wifi name here
+const char* password = "IEEE@2025"; // wifi password here
+
+const char* mqtt_server = "192.168.69.2";
+const int mqtt_port = 1880;
 
 /*---------------------------------------------------*/
-//MQTT client credentials
-//const char* mqtt_client = ""; //MQTT client ID
-//const char* mqtt_user = ""; //MQTT  username (node-red username)
-//const char* mqtt_password ="";  //MQTT password(nodde-red password)
 
 DHT dht(11, DHT11);//DHT input on pin 11(humidity and temperature)
+
+WiFiClient espClient;
+PubSubClient client(espClient);
 
 void InitWiFi()
 {
@@ -30,7 +32,7 @@ void InitWiFi()
     delay(1000);
   }
   Serial.print("Connected");
-}
+}// When connected doesn't print enything
 
 void setup()
 {
