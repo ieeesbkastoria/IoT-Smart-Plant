@@ -1,79 +1,75 @@
 #include <Arduino.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <WiFi.h>
+#include <cmath> //Δεν ξερω που το θελει
 
-DHT dht(11,DHT11);
+  int r = 1;
 
-float Sum = 0;
-int t = 0;
+//wifi  and MQTT settings
+const char* ssid = ""; //wifi name here
+const char* password = ""; // wifi password here
+//const char* mqtt_server = "broker.flowfuse.cloud";
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  pinMode(1, INPUT);
-  dht.begin();
+/*---------------------------------------------------*/
+//MQTT client credentials
+//const char* mqtt_client = ""; //MQTT client ID
+//const char* mqtt_user = ""; //MQTT  username (node-red username)
+//const char* mqtt_password ="";  //MQTT password(nodde-red password)
+
+DHT dht(11, DHT11);//DHT input on pin 11(humidity and temperature)
+
+void InitWiFi()
+{
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi ..");
+  while (WiFi.status() != WL_CONNECTED) 
+  {
+    Serial.print(".");
+    delay(1000);
+  }
+  Serial.print("Connected");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void setup()
+{
+  Serial.begin(57600);
 
-  int sensor_analog;
-  float dryValeu = 1500.0;                          //here we have the value when it's completly dry
-  float wetValeu = 4095.0;                         //here we have the value when it's completly wet
-  float value = wetValeu - dryValeu;
+  InitWiFi();
+  Serial.print("RRSI: ");
+  Serial.print(WiFi.RSSI());
+}
 
-  sensor_analog = analogRead(1);
-  Serial.print("This is the output of the sensor analog:");
-  Serial.print(sensor_analog);
-  Serial.print("\n");
-  delay(3000);
-  
-   /*---------------------------------------------------------------------------------------------------*/
+void loop()
+{
+  int sensor_analog = analogRead(1);//moisture lvl input pin = 1
+  int dry_valeu = 1500;
+  int wet_valeu = 4095;
+  float humidity = 0;
+  float temperature = 0;
 
-  // Code with map, here we take the analogRead and proportionly to where it is
-  // between the dry and wet value you get the persentance in humidity
-  int moisture_lvl = map(sensor_analog, dryValeu, wetValeu, 0, 100);
+/*--------------------------------------------------------------------*/
+//moisture lvl read and precentage
+ int moisture_lvl = map(sensor_analog, dry_valeu, wet_valeu, 0, 100);
 
-  //the constrain keeps the output value between the limmits. Our limmits are 0 - 100
   moisture_lvl = constrain(moisture_lvl, 0, 100);
+
+/*--------------------------------------------------------------------*/
+//print data
   Serial.print("This is the map algorithm:");
   Serial.print(moisture_lvl);
   Serial.print("%\n" );
-  delay(3000);
-
+  Serial.print("\n");
+  //delay(1500);
   
-
-   /*---------------------------------------------------------------------------------------------------*/
-
-  Sum = Sum + sensor_analog;
-  t = t + 1;
-
-  if (t >= 30)
-  {
-    Serial.print("Summary:");
-    float Sum1;
-    Sum1 = Sum / t;
-    int m = map(Sum1, dryValeu, wetValeu, 0, 100);
-    m = constrain(moisture_lvl, 0, 100);
-    Serial.print(m);
-    Serial.print("\n");
-
-    t = 0;
-  }
-
-  Serial.print("Loop:");
-  Serial.print(t);
-  Serial.print("\n");
-
-  /*--------------------Humidity sensor and Temperature sensor-----------------------------------------*/
-  float humidity;
-  float temperature;
-  Serial.print("\n");
-
-  temperature = dht.readTemperature();//from library
+  
+/*---------------------------------------------------------------------*/
+//temperature and humidity recording
+  temperature = dht.readTemperature();
   humidity = dht.readHumidity();
 
-  if(isnan(humidity) || isnan(temperature))//error on reading
+  if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
     return;
@@ -88,4 +84,7 @@ void loop() {
   Serial.print("%");
   Serial.print("\n");
   delay(5000);
+
+/*-------------------------------------------------------------------*/
+  r = r * 2;
 }
