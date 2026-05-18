@@ -12,7 +12,7 @@ const char* ssid = "IEEE Lab"; //wifi name here
 const char* password = "IEEE@2025"; // wifi password here
 
 const char* mqtt_server = "192.168.69.2";
-const int mqtt_port = 1880;
+const int mqtt_port = 1880;// or 1883
 
 /*---------------------------------------------------*/
 
