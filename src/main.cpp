@@ -5,8 +5,6 @@
 #include <PubSubClient.h>
 #include <cmath> //Δεν ξερω που το θελει
 
-  int r = 1;
-
 //wifi  and MQTT settings
 const char* ssid = "IEEE Lab"; //wifi name here
 const char* password = "IEEE@2025"; // wifi password here
@@ -20,6 +18,8 @@ DHT dht(11, DHT11);//DHT input on pin 11(humidity and temperature)
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+long lastMsg = 0;
+
 
 void InitWiFi()
 {
@@ -38,6 +38,8 @@ void setup()
 {
   Serial.begin(57600);
 
+  client.setServer(mqtt_server, 1880);
+
   InitWiFi();
   Serial.print("RRSI: ");
   Serial.print(WiFi.RSSI());
@@ -45,6 +47,13 @@ void setup()
 
 void loop()
 {
+
+  long now = millis();
+  if (now - lastMsg > 5000) 
+  {
+    lastMsg = now;
+  }
+
   int sensor_analog = analogRead(1);//moisture lvl input pin = 1
   int dry_valeu = 1500;
   int wet_valeu = 4095;
@@ -59,7 +68,7 @@ void loop()
 
 /*--------------------------------------------------------------------*/
 //print data
-  Serial.print("This is the map algorithm:");
+  //Serial.print("This is the map algorithm:");
   Serial.print(moisture_lvl);
   Serial.print("%\n" );
   Serial.print("\n");
@@ -85,8 +94,10 @@ void loop()
   Serial.print(humidity);
   Serial.print("%");
   Serial.print("\n");
-  delay(5000);
 
-/*-------------------------------------------------------------------*/
-  r = r * 2;
+  char humString[5];
+  dtostrf(humidity, 1, 2, humString);
+   client.publish("esp32/humidity", humString);
+  
+  delay(5000);
 }
