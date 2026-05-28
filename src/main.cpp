@@ -10,7 +10,7 @@ const char* ssid = "IEEE Lab"; //wifi name here
 const char* password = "IEEE@2025"; // wifi password here
 
 const char* mqtt_server = "192.168.69.2";
-const int mqtt_port = 1880;// or 1883
+const int mqtt_port = 1883;// or 1880
 
 /*---------------------------------------------------*/
 
@@ -26,6 +26,7 @@ void InitWiFi()
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.print("Connecting to WiFi ..");
+
   while (WiFi.status() != WL_CONNECTED) 
   {
     Serial.print(".");
@@ -38,15 +39,37 @@ void setup()
 {
   Serial.begin(57600);
 
-  client.setServer(mqtt_server, 1880);
+  client.setServer(mqtt_server, 1883);
 
   InitWiFi();
   Serial.print("RRSI: ");
   Serial.print(WiFi.RSSI());
 }
 
+void reconnect(){
+  while (!client.connected()){
+    Serial.print("Atempting MQTT connection...");
+    if (client.connect("espClient")){
+       Serial.print("Succesfully connected!");
+       //subscribe
+       client.subscribe("ESP32/output");
+     } else{
+      Serial.print("Failed, rc = ");
+      Serial.print(client.state());
+      Serial.print("try again in 5s ");
+      delay(5000);
+     }
+  }
+
+}
+
 void loop()
 {
+
+  if(!client.connected()){
+    reconnect();
+  }
+  client.loop();
 
   long now = millis();
   if (now - lastMsg > 5000) 
