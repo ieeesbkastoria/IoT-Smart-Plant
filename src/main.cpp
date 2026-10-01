@@ -5,16 +5,16 @@
 #include <PubSubClient.h>
 //#include <string.h>
 #include <cmath> //Δεν ξερω που το θελει
+#include <cstring>
 
 //wifi  and MQTT settings
 const char* ssid = "IEEE Lab"; //wifi name here
 const char* password = "IEEE@2025"; // wifi password here
 
 const char* mqtt_server = "192.168.69.2";
-<<<<<<< HEAD
+
 const int mqtt_port = 1883;// or 1880
-=======
->>>>>>> 511e6db (προστεθηκε node-red)
+
 
 /*---------------------------------------------------*/
 
@@ -83,41 +83,19 @@ void setup()
   client.setServer(mqtt_server, 1883);//1880
   client.setCallback(callback);
 
-<<<<<<< HEAD
-  client.setServer(mqtt_server, 1883);
-=======
->>>>>>> 511e6db (προστεθηκε node-red)
-
   InitWiFi();
   Serial.print("RRSI: ");
   Serial.print(WiFi.RSSI());
-}
 
-void reconnect(){
-  while (!client.connected()){
-    Serial.print("Atempting MQTT connection...");
-    if (client.connect("espClient")){
-       Serial.print("Succesfully connected!");
-       //subscribe
-       client.subscribe("ESP32/output");
-     } else{
-      Serial.print("Failed, rc = ");
-      Serial.print(client.state());
-      Serial.print("try again in 5s ");
-      delay(5000);
-     }
+  if(client.connected())
+  {
+    Serial.println("MQTT connected");
   }
-
 }
 
 void loop()
 {
   if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-
-  if(!client.connected()){
     reconnect();
   }
   client.loop();
@@ -131,8 +109,8 @@ void loop()
   int sensor_analog = analogRead(1);//moisture lvl input pin = 1
   int dry_valeu = 1500;
   int wet_valeu = 4095;
-  float humidity = 0;
-  float temperature = 0;
+  float humidity;
+  float temperature;
 
 /*--------------------------------------------------------------------*/
 //moisture lvl read and precentage
@@ -158,13 +136,13 @@ void loop()
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
 
-  char humString[5];
-  char tempString[5];
+  char humString[5];//use for both humidity and temperature
+  //char tempString[5];
 
   if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
-    return;
+    //return;
   }
 
   Serial.print("Temperature: ");
@@ -176,10 +154,11 @@ void loop()
   Serial.print("%");
   Serial.print("\n");
 
-  dtostrf(temperature, 1, 4, tempString);
+  //dtostrf(temperature, 1, 2, tempString);
   dtostrf(humidity, 1, 2, humString);
   client.publish("hum", humString);//hum
-  client.publish("temper", tempString);//temp
+  dtostrf(temperature, 1, 2, humString);
+  client.publish("temp", humString);//temp
   client.publish("Soil", soilString);
   
   delay(5000);
