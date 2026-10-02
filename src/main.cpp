@@ -20,6 +20,8 @@ const int mqtt_port = 1883;// or 1880
 
 DHT dht(11, DHT11);//DHT input on pin 11(humidity and temperature)
 
+#define relay 14
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;
@@ -78,7 +80,8 @@ void reconnect() {
 void setup()
 {
   Serial.begin(115200);
-  delay(200);
+
+  pinMode(relay, OUTPUT);
 
   client.setServer(mqtt_server, 1883);//1880
   client.setCallback(callback);
@@ -95,6 +98,9 @@ void setup()
 
 void loop()
 {
+
+  digitalWrite(relay, LOW);
+
   if (!client.connected()) {
     reconnect();
   }
@@ -131,7 +137,14 @@ void loop()
   //delay(1500);
   
   
-/*---------------------------------------------------------------------*/
+/*-------------------------------RELAY-----------------------------------*/
+  if(moisture_lvl <= 15)
+  {
+    digitalWrite(relay,HIGH);
+    delay(7000);
+  }
+
+
 //temperature and humidity recording
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
