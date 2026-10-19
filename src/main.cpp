@@ -141,7 +141,7 @@ void loop()
   if(moisture_lvl <= 15)
   {
     digitalWrite(relay,HIGH);
-    delay(7000);
+    delay(6000);
   }
 
 
