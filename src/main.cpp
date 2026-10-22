@@ -3,8 +3,7 @@
 #include <DHT_U.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-//#include <string.h>
-#include <cmath> //Δεν ξερω που το θελει
+#include <cmath>
 #include <cstring>
 
 //wifi  and MQTT settings
@@ -13,18 +12,17 @@ const char* password = "IEEE@2025"; // wifi password here
 
 const char* mqtt_server = "192.168.69.2";
 
-const int mqtt_port = 1883;// or 1880
+const int mqtt_port = 1883;
 
 
 /*---------------------------------------------------*/
-
-DHT dht(11, DHT11);//DHT input on pin 11(humidity and temperature)
+//DHT input on pin 11(humidity and temperature)
+DHT dht(11, DHT11);
 
 #define relay 14
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-long lastMsg = 0;
 
 
 void InitWiFi()
@@ -39,7 +37,7 @@ void InitWiFi()
     delay(1000);
   }
   Serial.print("Connected");
-}// When connected doesn't print enything
+}
 
 void callback(char* topic, byte* message, unsigned int lenth)
 {
@@ -83,7 +81,7 @@ void setup()
 
   pinMode(relay, OUTPUT);
 
-  client.setServer(mqtt_server, 1883);//1880
+  client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
   InitWiFi();
@@ -106,20 +104,17 @@ void loop()
   }
   client.loop();
 
-  long now = millis();
-  if (now - lastMsg > 5000) 
-  {
-    lastMsg = now;
-  }
+/*--------------------------------------------------------------------*/
 
-  int sensor_analog = analogRead(1);//moisture lvl input pin = 1
+  //moisture level input pin = 1
+  int sensor_analog = analogRead(1);
   int dry_valeu = 1500;
   int wet_valeu = 4095;
   float humidity;
   float temperature;
 
 /*--------------------------------------------------------------------*/
-//moisture lvl read and precentage
+//moisture level precentage
  int moisture_lvl = map(sensor_analog, dry_valeu, wet_valeu, 0, 100);
 
   moisture_lvl = constrain(moisture_lvl, 0, 100);
@@ -129,12 +124,10 @@ void loop()
   dtostrf(moisture_lvl, 1, 2,soilString);
 
 /*--------------------------------------------------------------------*/
-//print data
-  //Serial.print("This is the map algorithm:");
+ 
   Serial.print(moisture_lvl);
   Serial.print("%\n" );
   Serial.print("\n");
-  //delay(1500);
   
   
 /*-------------------------------RELAY-----------------------------------*/
@@ -145,17 +138,15 @@ void loop()
   }
 
 
-//temperature and humidity recording
+//temperature and humidity readings
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
 
-  char humString[5];//use for both humidity and temperature
-  //char tempString[5];
+  char humString[5]; //use for both humidity and temperature
 
   if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
-    //return;
   }
 
   Serial.print("Temperature: ");
@@ -167,7 +158,6 @@ void loop()
   Serial.print("%");
   Serial.print("\n");
 
-  //dtostrf(temperature, 1, 2, tempString);
   dtostrf(humidity, 1, 2, humString);
   client.publish("hum", humString);//hum
   dtostrf(temperature, 1, 2, humString);
