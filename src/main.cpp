@@ -62,6 +62,7 @@ void reconnect() {
 void setup()
 {
   Serial.begin(115200);
+  dht.begin();
 
   pinMode(relay, OUTPUT);
 
@@ -109,9 +110,9 @@ void loop()
 
 /*--------------------------------------------------------------------*/
  
-  Serial.print(moisture_lvl);
-  Serial.print("%\n" );
-  Serial.print("\n");
+ //Serial.print(moisture_lvl);
+ //Serial.print("%\n" );
+ //Serial.print("\n");
   
   
 /*-------------------------------RELAY-----------------------------------*/
@@ -132,21 +133,24 @@ void loop()
   {
     Serial.print("Error data reading \n");
   }
+  else
+  {
 
-  //Serial.print("Temperature: ");
-  //Serial.print(temperature);
-  //Serial.print("C, ");
-  //Serial.print("\n");
-  //Serial.print("Humidity: ");
-  //Serial.print(humidity);
-  //Serial.print("%");
-  //Serial.print("\n");
+    //Serial.print("Temperature: ");
+    //Serial.print(temperature);
+    //Serial.print("C, ");
+    //Serial.print("\n");
+    //Serial.print("Humidity: ");
+    //Serial.print(humidity);
+    //Serial.print("%");
+    //Serial.print("\n");
 
-  dtostrf(humidity, 1, 2, humString);
-  client.publish("hum", humString);//hum
-  dtostrf(temperature, 1, 2, humString);
-  client.publish("temp", humString);//temp
-  client.publish("Soil", soilString);
+    dtostrf(humidity, 1, 2, humString);
+    client.publish("hum", humString);//hum
+    dtostrf(temperature, 1, 2, humString);
+    client.publish("temp", humString);//temp
+    client.publish("Soil", soilString);
+  }
   
   delay(5000);
 }
