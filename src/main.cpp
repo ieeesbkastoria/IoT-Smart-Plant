@@ -39,22 +39,6 @@ void InitWiFi()
   Serial.print("Connected");
 }
 
-void callback(char* topic, byte* message, unsigned int lenth)
-{
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
-  String messageTemp;
-
-  for (int i = 0; i<lenth; i++)
-  {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
-  }
-  
-  Serial.println();
-}
-
 void reconnect() {
   while (!client.connected())
   {
@@ -119,7 +103,7 @@ void loop()
 
   moisture_lvl = constrain(moisture_lvl, 0, 100);
 
-  char soilString[5];
+  char soilString[10];
 
   dtostrf(moisture_lvl, 1, 2,soilString);
 
@@ -142,21 +126,21 @@ void loop()
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
 
-  char humString[5]; //use for both humidity and temperature
+  char humString[10]; //use for both humidity and temperature
 
   if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
   }
 
-  Serial.print("Temperature: ");
-  Serial.print(temperature);
-  Serial.print("C, ");
-  Serial.print("\n");
-  Serial.print("Humidity: ");
-  Serial.print(humidity);
-  Serial.print("%");
-  Serial.print("\n");
+  //Serial.print("Temperature: ");
+  //Serial.print(temperature);
+  //Serial.print("C, ");
+  //Serial.print("\n");
+  //Serial.print("Humidity: ");
+  //Serial.print(humidity);
+  //Serial.print("%");
+  //Serial.print("\n");
 
   dtostrf(humidity, 1, 2, humString);
   client.publish("hum", humString);//hum
