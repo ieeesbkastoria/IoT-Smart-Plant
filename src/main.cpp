@@ -72,11 +72,7 @@ void setup()
   InitWiFi();
   Serial.print("RRSI: ");
   Serial.print(WiFi.RSSI());
-
-  if(client.connected())
-  {
-    Serial.println("MQTT connected");
-  }
+  
 }
 
 void loop()
