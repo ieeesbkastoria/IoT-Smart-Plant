@@ -85,6 +85,11 @@ void loop()
   }
   client.loop();
 
+  /*if (WiFi.status() != WL_CONNECTED)
+  {
+    InitWiFi();
+  }*/
+
 /*--------------------------------------------------------------------*/
 
   //moisture level input pin = 1
