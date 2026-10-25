@@ -5,6 +5,7 @@
 #include <PubSubClient.h>
 #include <cmath>
 #include <cstring>
+#include <secrets.h>
 
 //wifi  and MQTT settings
 #define SECRET_SSID = "IEEE lab"; //wifi name here
