@@ -7,8 +7,8 @@
 #include <cstring>
 
 //wifi  and MQTT settings
-const char* ssid = "..."; //wifi name here
-const char* password = "..."; // wifi password here
+#define SECRET_SSID = "IEEE lab"; //wifi name here
+#define SECRET_PASS = "IEEE@2025"; // wifi password here
 
 const char* mqtt_server = "192.168.69.2";
 
