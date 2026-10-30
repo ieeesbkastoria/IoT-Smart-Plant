@@ -7,10 +7,6 @@
 #include <cstring>
 #include <secrets.h>
 
-//wifi  and MQTT settings
-#define SECRET_SSID = "IEEE lab"; //wifi name here
-#define SECRET_PASS = "IEEE@2025"; // wifi password here
-
 const char* mqtt_server = "192.168.69.2";
 
 const int mqtt_port = 1883;
@@ -29,7 +25,7 @@ PubSubClient client(espClient);
 void InitWiFi()
 {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(SECRET_SSID, SECRET_PASS);
   Serial.print("Connecting to WiFi ..");
 
   while (WiFi.status() != WL_CONNECTED) 
