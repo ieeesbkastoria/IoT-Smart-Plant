@@ -39,6 +39,22 @@ void InitWiFi()
 void reconnect() {
   while (!client.connected())
   {
+
+    //esp will be in this "while" until it will connect again 
+    while(WiFi.status() != WL_CONNECTED)
+    {
+      Serial.print("WiFi disconnected. Reconnecting to WIFI..");
+      
+      WiFi.disconnect();
+      WiFi.begin();
+      delay(5000);
+
+      if(WiFi.status() == WL_CONNECTED)
+      {
+        Serial.print("WiFI Reconnected");
+      }
+    }
+
     Serial.print("Attempting MQTT connection...");
     if (client.connect("espClient"))
     {
@@ -82,10 +98,6 @@ void loop()
   }
   client.loop();
 
-  /*if (WiFi.status() != WL_CONNECTED)
-  {
-    InitWiFi();
-  }*/
 
 /*--------------------------------------------------------------------*/
 
@@ -96,8 +108,8 @@ void loop()
   float humidity;
   float temperature;
 
-/*--------------------------------------------------------------------*/
-//moisture level precentage
+/*---------------------------SOIL_MOISTURE_PERCENTAGE-----------------------------------------*/
+
  int moisture_lvl = map(sensor_analog, dry_valeu, wet_valeu, 0, 100);
 
   moisture_lvl = constrain(moisture_lvl, 0, 100);
@@ -105,12 +117,6 @@ void loop()
   char soilString[10];
 
   dtostrf(moisture_lvl, 1, 2,soilString);
-
-/*--------------------------------------------------------------------*/
- 
- //Serial.print(moisture_lvl);
- //Serial.print("%\n" );
- //Serial.print("\n");
   
   
 /*-------------------------------RELAY-----------------------------------*/
@@ -120,8 +126,8 @@ void loop()
     delay(6000);
   }
 
+/*----------------------------DHT_11------------------------------------*/
 
-//temperature and humidity readings
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
 
@@ -134,20 +140,14 @@ void loop()
   else
   {
 
-    //Serial.print("Temperature: ");
-    //Serial.print(temperature);
-    //Serial.print("C, ");
-    //Serial.print("\n");
-    //Serial.print("Humidity: ");
-    //Serial.print(humidity);
-    //Serial.print("%");
-    //Serial.print("\n");
-
+    //Here we sent data from sensors to Database 
     dtostrf(humidity, 1, 2, humString);
-    client.publish("hum", humString);//hum
+    client.publish("hum", humString);         //humidity value
+
     dtostrf(temperature, 1, 2, humString);
-    client.publish("temp", humString);//temp
-    client.publish("Soil", soilString);
+    client.publish("temp", humString);         //temperature value
+
+    client.publish("Soil", soilString);        //soil humidity value
   }
   
   delay(5000);
