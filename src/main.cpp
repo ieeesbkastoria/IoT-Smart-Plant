@@ -80,8 +80,7 @@ void setup()
   pinMode(relay, OUTPUT);
 
   client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-
+  
   InitWiFi();
   Serial.print("RRSI: ");
   Serial.print(WiFi.RSSI());
@@ -136,8 +135,10 @@ void loop()
   if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
+    return;
   }
-  else
+
+  if(!std::isnan(humidity) and !std::isnan(temperature))
   {
 
     //Here we sent data from sensors to Database 
