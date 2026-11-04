@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include <cmath>
 #include <cstring>
-#include <secrets.h>
+#include "secrets.h"
 
 const char* mqtt_server = "192.168.69.2";
 
@@ -102,16 +102,20 @@ void loop()
 
   //moisture level input pin = 1
   int sensor_analog = analogRead(1);
-  int dry_valeu = 1500;
-  int wet_valeu = 4095;
+  int moisture_lvl;
+  int dry_valeu = 0;
+  int wet_valeu = 2300;
   float humidity;
   float temperature;
 
 /*---------------------------SOIL_MOISTURE_PERCENTAGE-----------------------------------------*/
 
- int moisture_lvl = map(sensor_analog, dry_valeu, wet_valeu, 0, 100);
+  moisture_lvl = map(sensor_analog, dry_valeu, wet_valeu, 0, 100);
 
   moisture_lvl = constrain(moisture_lvl, 0, 100);
+
+  Serial.print("moisture: ");
+  Serial.println(moisture_lvl);
 
   char soilString[10];
 
@@ -135,11 +139,8 @@ void loop()
   if(std::isnan(humidity) || std::isnan(temperature))
   {
     Serial.print("Error data reading \n");
-    return;
   }
-
-  if(!std::isnan(humidity) and !std::isnan(temperature))
-  {
+  else{
 
     //Here we sent data from sensors to Database 
     dtostrf(humidity, 1, 2, humString);
@@ -150,6 +151,6 @@ void loop()
 
     client.publish("Soil", soilString);        //soil humidity value
   }
-  
-  delay(5000);
+
+ delay(5000);
 }
