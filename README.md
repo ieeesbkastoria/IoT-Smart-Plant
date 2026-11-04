@@ -48,7 +48,7 @@
 ## 📡 MQTT Topics
 
 | Topic | Κατεύθυνση |
-|---|---|---|
+|---|---|
 | `temp` | ESP32 → Broker |
 | `hum` | ESP32 → Broker |
 | `Soil` | ESP32 → Broker |
