@@ -47,7 +47,7 @@
 
 ## 📡 MQTT Topics
 
-| Topic | Κατεύθυνση | Περιεχόμενο |
+| Topic | Κατεύθυνση |
 |---|---|---|
 | `temp` | ESP32 → Broker |
 | `hum` | ESP32 → Broker |
