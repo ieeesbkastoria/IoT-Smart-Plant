@@ -42,6 +42,9 @@
 | VCC / GND | 3.3V & 5V / GND |
 
 > ⚠️ Η αντλία πρέπει να τροφοδοτείται από **ξεχωριστή πηγή** μέσω του relay, όχι απευθείας από το ESP32.
+>
+> ##Fritzing
+<img width="1273" height="859" alt="Screenshot_20261104_151728" src="https://github.com/user-attachments/assets/40ab1935-e065-4c25-9adf-7cce7d779e2a" />
 
 ---
 
